@@ -7,6 +7,7 @@
         <meta name="description" content="Description">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+        @vite(['resources/sass/app.scss', 'resources/js/app.js'])
         <link rel="icon" href="{{ asset('img/granos-de-cafe.png') }}" type="image/x-icon">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-grid.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">

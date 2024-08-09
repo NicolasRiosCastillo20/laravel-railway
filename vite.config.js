@@ -11,4 +11,5 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    base: 'https://laravel-railway-production-1fc2.up.railway.app/',
 });
