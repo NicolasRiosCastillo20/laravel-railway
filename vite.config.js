@@ -11,8 +11,4 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    build: {
-        manifest: true, // Asegúrate de que esta opción esté habilitada
-        outDir: 'public/build', // Verifica que la salida esté configurada correctamente
-    },
 });
