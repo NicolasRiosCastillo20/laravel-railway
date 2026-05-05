@@ -39,7 +39,16 @@
             @include('blog.footer')
         </footer>
 
-        <script src="{{ asset('libs/jquery/jquery.min.js') }}"></script>
+        <script>
+            window.appRoutes = {
+                serviceFormCreate: "{{ route('service.form.create') }}",
+                createService: "{{ route('create.service') }}",
+                getShortDescriptionService: "{{ route('get.short.description') }}",
+                getLongDescriptionService: "{{ route('get.long.description') }}",
+                deleteService: "{{ route('delete.service') }}"
+            };
+        </script>
+        <script src="{{ asset('libs/jquery/jquery.min.js') }}"></>
         <script src="{{ asset('libs/lozad/lozad.min.js') }}"></script>
         <script src="{{ asset('libs/device/device.js') }}"></script>
         <script src="{{ asset('libs/spincrement/jquery.spincrement.min.js') }}"></script>
@@ -58,6 +67,7 @@
                     theme: 'snow'
                 });
             }
+            
         </script>
 
     </body>

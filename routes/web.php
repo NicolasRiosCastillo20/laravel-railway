@@ -32,7 +32,8 @@ Route::prefix('contact')->group(function () {
 });
 
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+// Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/', function () {
         return redirect()->route('AdminService');
     });
@@ -45,11 +46,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::prefix('service')->group(function () {
         Route::get('/', [AdminController::class, 'adminService'])->name('AdminService');
-        Route::post('/fromCreateService', [AdminController::class, 'fromCreateService']);
-        Route::post('/CreateService', [AdminController::class, 'createService']);
-        Route::get('/getShortDescription/{idService}', [AdminController::class, 'shortDescription']);
-        Route::get('/getLongDescription/{idService}', [AdminController::class, 'longDescription']);
-        Route::delete('/{idService}', [AdminController::class, 'deleteService']);
+        Route::post('/fromCreateService', [AdminController::class, 'fromCreateService'])->name('service.form.create');
+        Route::post('/CreateService', [AdminController::class, 'createService'])->name('create.service');
+        Route::put('/updateService', [AdminController::class, 'updateService'])->name('update.service');
+        Route::get('/getShortDescription', [AdminController::class, 'shortDescription'])->name('get.short.description');
+        Route::get('/getLongDescription', [AdminController::class, 'longDescription'])->name('get.long.description');
+        Route::delete('/', [AdminController::class, 'deleteService'])->name('delete.service');
     });
 
 

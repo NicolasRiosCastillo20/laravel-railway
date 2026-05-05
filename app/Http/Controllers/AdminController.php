@@ -90,8 +90,15 @@ class AdminController extends Controller
     }
 
 
-    public function shortDescription($idService)
+    public function updateService(Request $request)
     {
+        return 'estoy en el controlador';
+    }
+
+
+    public function shortDescription(Request $request)
+    {
+        $idService = $request->idService;
         $shortDescription = Service::where('id', $idService)->select('short_description')->first();
         if ($shortDescription) {
             $data = ['shortDescription' => $shortDescription->short_description];
@@ -102,8 +109,9 @@ class AdminController extends Controller
     }
 
 
-    public function longDescription($idService)
+    public function longDescription(Request $request)
     {
+        $idService = $request->idService;
         $longDescription = Service::where('id', $idService)->select('long_description')->first();
         if ($longDescription) {
             $data = ['longDescription' => $longDescription->long_description];
@@ -113,8 +121,9 @@ class AdminController extends Controller
     }
 
 
-    public function deleteService($idService)
+    public function deleteService(Request $request)
     {
+        $idService = $request->idService;
         $service = Service::find($idService);
         if ($service) {
             $service->delete();

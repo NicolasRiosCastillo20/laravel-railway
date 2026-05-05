@@ -1,38 +1,22 @@
+// notificaiones
 var notyf = new Notyf({
     duration: 5000,
-    position: {
-        x: 'right',
-        y: 'top'
-    },
+    position: { x: 'right', y: 'top' }
 });
 
 
-//instancia de Tingle.js
+// configuaracion para el input con opciones de texto
+let quill = null;
+
 var modal = new tingle.modal({
     footer: true,
-    stickyFooter: false,
-    closeMethods: ['overlay', 'button', 'escape'],
-    closeLabel: "Close",
-    cssClass: ['custom-class-1', 'custom-class-2'],
-    onOpen: function() {
-        console.log('modal open');
-    },
-    onClose: function() {
-        console.log('modal closed');
-    },
-    beforeClose: function() {
-        return true;
-    }
+    closeMethods: ['overlay', 'button', 'escape']
 });
 
-// Inicializa Quill cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-    window.quill = new Quill('#editor', {
-        theme: 'snow'
-    });
-});
 
+// abrir el formulario de Crear el servicio
 const formModalCreateService = () => {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -40,129 +24,139 @@ const formModalCreateService = () => {
     });
 
     $.ajax({
-        url: window.location.href + '/fromCreateService',
+        url:  window.appRoutes.serviceFormCreate,
         type: 'POST',
-        success: function(response) {
-            modal.setContent('<div class="custom-modal-scroll">' + response.view + '</div>');
+        success: function (response) {
+
+            // Inserta el HTML del formulario
+            modal.setContent(
+                '<div class="custom-modal-scroll">' + response.view + '</div>'
+            );
             modal.open();
-            const editorElement = document.querySelector('#editor');
-            if (editorElement && !window.quill) {
-                window.quill = new Quill('#editor', {
-                    theme: 'snow'
-                });
-            }
+
+            // Espera a que el DOM exista y crea Quill UNA VEZ
+            setTimeout(() => {
+
+                const editor = document.querySelector('#editor');
+
+                if (editor) {
+                    quill = new Quill(editor, {
+                        theme: 'snow'
+                    });
+                }
+
+            }, 0);
         },
-        error: function (error) {
-             notyf.error('Algo salió mal. Intente nuevamente');
+        error: function () {
+            notyf.error('Algo salió mal. Intente nuevamente');
         }
     });
-}
+};
 
 
+// crear servicio
 const createService = () => {
-    if (!window.quill) {
-        console.error('Quill no está inicializado');
+
+    if (!quill) {
+        notyf.error('El editor no está inicializado');
         return;
     }
-    const longDescription = window.quill.root.innerHTML;
-    document.getElementById('longDescription').value = longDescription;
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    // Sincroniza Quill → input hidden
+    document.getElementById('longDescription').value =
+        quill.root.innerHTML;
 
     let formulario = document.getElementById('formCreateService');
     let formData = new FormData(formulario);
 
     $.ajax({
-        url: window.location.href + '/CreateService',
+        url:  window.appRoutes.createService,
         method: 'POST',
         data: formData,
         processData: false,
         contentType: false,
-        success: function(response) {
-            console.log(response);
-            notyf.success('Se registro correctamente');
-            setTimeout(function() {
-                location.reload();
-            }, 6000);
+        success: function () {
+            notyf.success('Se registró correctamente');
+            setTimeout(() => location.reload(), 1500);
         },
-        error: function(error) {
+        error: function () {
             notyf.error('Algo salió mal. Intente nuevamente');
         }
     });
-}
+};
 
 
+// ver descripcion corta
 const getShortDescription = (id_service) => {
+    console.log(window.appRoutes);
+    
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
     $.ajax({
-        url: window.location.href + '/getShortDescription/' + id_service,
+        url: window.appRoutes.getShortDescriptionService,
         type: 'GET',
+        data: {idService: id_service},
         success: function (response) {
             modal.setContent(response.view);
             modal.open();
+            quill = null;
         },
-        error: function(xhr) {
-            if (xhr.status === 404) {
-                notyf.error('Servicio no encontrado.');
-            } else {
-                notyf.error('Error Al Eliminar')
-            }
+        error: function () {
+            notyf.error('Servicio no encontrado');
         }
-    })
-}
+    });
+};
 
 
+
+// ver descripcion larga
 const getLongDescription = (id_service) => {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
     $.ajax({
-        url: window.location.href + '/getLongDescription/' + id_service,
+        url: window.appRoutes.getLongDescriptionService,
         type: 'GET',
+        data: {idService: id_service},
         success: function (response) {
             modal.setContent(response.data.longDescription);
             modal.open();
+            quill = null; // 🔑 IMPORTANTE
         },
-        error: function(xhr) {
-            if (xhr.status === 404) {
-                notyf.error('Servicio no encontrado.');
-            } else {
-                notyf.error('Error Al Eliminar')
-            }
+        error: function () {
+            notyf.error('Servicio no encontrado');
         }
-    })
-}
+    });
+};
 
 
+// eliminar servicio
 const deleteService = (id_service) => {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
     $.ajax({
-        url: window.location.href + '/' + id_service,
+        url: window.appRoutes.deleteService,
         type: 'DELETE',
+        data: {idService: id_service},
         success: function (response) {
             $('#service-' + id_service).remove();
             notyf.success(response.message);
         },
-        error: function(xhr) {
-            if (xhr.status === 404) {
-                notyf.error('Servicio no encontrado.');
-            } else {
-                notyf.error('Error Al Eliminar')
-            }
+        error: function () {
+            notyf.error('Error al eliminar');
         }
-    })
-}
+    });
+};
