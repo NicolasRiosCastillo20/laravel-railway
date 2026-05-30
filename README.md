@@ -69,8 +69,8 @@ Además, cuenta con un panel administrativo para la gestión de contenido, permi
 ### Clonar el repositorio
 
 ```bash
-git clone https://github.com/TU-USUARIO/mocca-aventura-cafe.git
-cd mocca-aventura-cafe
+git clone https://github.com/NicolasRiosCastillo20/laravel-railway
+cd laravel-railway
 ```
 
 ### Instalar dependencias
